@@ -161,6 +161,7 @@ unsigned int UniqueArray<Element, Compare>::getSize() const {
 template<class Element, class Compare>
 UniqueArray<Element, Compare>
 UniqueArray<Element, Compare>::filter(const Filter &f) const {
+    /*
     //create empty UniqueArray
     UniqueArray FilteredArray = UniqueArray(this->size);
     //copy only filtered results, all else are given NULL
@@ -175,16 +176,15 @@ UniqueArray<Element, Compare>::filter(const Filter &f) const {
         }
     }
     return FilteredArray;
+*/
 
-
-    /* How can we use copy constructor here?
-     *
-    UniqueArray Filtered  = UniqueArray(this);
+    UniqueArray<Element,Compare> Filtered(*this);
     for (int i=0; i<Filtered.next_index;i++){
-        if (!f(*(Filtered.data[i]))){
-            Filtered.remove(Filtered.data[i]);
+        if (!f(*(data[i]))){
+            Filtered.remove(*data[i]);
         }
-    }*/
+    }
+    return Filtered;
 
 
 }
