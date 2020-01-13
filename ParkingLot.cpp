@@ -11,6 +11,78 @@ namespace MtmParkingLot {
             car_parking(parkingBlockSizes[2]) {
     }
 
+    //enterParking
+    ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
+                                           LicensePlate licensePlate,
+                                           Time entranceTime) {
+        Vehicle vehicle(vehicleType, licensePlate, entranceTime);
+        //parked somewhere in lot
+        ParkingResult result;
+        if (findVehicleInLot(vehicle.getLicensePlate())!= NULL) {
+            ParkingLotPrinter::printEntryFailureAlreadyParked(std::cout,
+                                                              vehicle.getParkingSpot());
+            return VEHICLE_ALREADY_PARKED;
+        }
+        //full/insert
+        switch (vehicleType) {
+            case MOTORBIKE: {
+                result = ParkingLot::entryHelper(motorbike_parking, vehicle, MOTORBIKE);
+                break;
+            }
+            case CAR: {
+                result = ParkingLot::entryHelper(car_parking, vehicle, CAR);
+                break;
+            }
+            case HANDICAPPED: {
+                ParkingResult handicapped_result = ParkingLot::entryHelper(
+                        handicapped_parking, vehicle, HANDICAPPED);
+                if (handicapped_result == NO_EMPTY_SPOT) {
+                    result = ParkingLot::entryHelper(car_parking, vehicle, CAR);
+                    break;
+                }
+                result = handicapped_result;
+                break;
+            }
+            default:
+                result = SUCCESS;
+                break;
+        }
+        return result;
+    }
+    //exitParking
+    ParkingResult ParkingLot::exitParking(LicensePlate licensePlate,
+                                          Time exitTime) {
+        Vehicle* wanted_vehicle = findVehicleInLot(licensePlate);
+        if (wanted_vehicle == NULL){
+            ParkingLotPrinter::printExitFailure(std::cout,licensePlate);
+            return VEHICLE_NOT_FOUND;
+        }
+        ParkingLotPrinter::printVehicle(std::cout, wanted_vehicle->getVehicleType(),wanted_vehicle->getLicensePlate(),wanted_vehicle->getEntranceTime());
+        UniqueArray wanted_vehicle_block = vehicleTypetoUniqueArray(wanted_vehicle->getParkingSpot().getParkingBlock());
+        int price = Vehicle::calculatingPrice(wanted_vehicle->getVehicleType(),wanted_vehicle->getEntranceTime(),exitTime);
+        wanted_vehicle_block.remove(*wanted_vehicle);
+        ParkingLotPrinter::printExitSuccess(std::cout, wanted_vehicle->getParkingSpot(),exitTime,price);
+        return SUCCESS;
+    }
+    //entryHelper
+    ParkingResult ParkingLot::entryHelper(
+            UniqueArray<Vehicle, std::equal_to> parking_block,
+            Vehicle vehicle, const VehicleType parking_block_type) {
+
+        try {
+            int index = parking_block.insert(vehicle);
+        } catch (UniqueArray::UniqueArrayIsFullException);
+        return NO_EMPTY_SPOT;
+        }
+        vehicle.updateParkingSpot(parking_block_type, index);
+        ParkingLotPrinter::printVehicle(std::cout, vehicle.getVehicleType(),
+                                        vehicle.getLicensePlate(),
+                                        vehicle.getEntranceTime());
+        ParkingLotPrinter::printEntrySuccess(std::cout,
+                                             vehicle.getParkingSpot());
+        return SUCCESS;
+    }
+
     //findVehicleInBlock
     Vehicle* ParkingLot::findVehicleInBlock(
             const UniqueArray<Vehicle, VehicleCompare> parking_block,
@@ -21,7 +93,7 @@ namespace MtmParkingLot {
     }
 
     //findVehicleInLot
-    Vehicle* ParkingLot::findVehicleInLot(const LicensePlate licensePlate ) const{
+    Vehicle* ParkingLot::findVehicleInLot(const LicensePlate license_plate ) const{
         Vehicle* found_vehicle = ParkingLot::findVehicleInBlock(motorbike_parking,licensePlate);
         if (found_vehicle != NULL){
             return found_vehicle;
@@ -32,66 +104,18 @@ namespace MtmParkingLot {
         }
         found_vehicle = ParkingLot::findVehicleInBlock(handicapped_parking,licensePlate);
         return found_vehicle;
-        }
     }
 
-    //enter_parking
-    ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
-                                           LicensePlate licensePlate,
-                                           Time entranceTime) {
-        Vehicle vehicle(vehicleType, licensePlate, entranceTime);
-        //parked somewhere in lot
-        if (findVehicleInLot(vehicle.getLicensePlate())) {
-            ParkingLotPrinter::printEntryFailureAlreadyParked(std::cout,
-                                                              vehicle.getParkingSpot());
-            return VEHICLE_ALREADY_PARKED;
+    //vehicleTypetoUniqueArray
+    UniqueArray<Vehicle,VehicleCompare> ParkingLot::vehicleTypetoUniqueArray(
+            VehicleType vehicle_block_type) const{
+        if (vehicle_block_type == MOTORBIKE) {
+            return motorbike_parking;
         }
-        //full/insert
-        switch (vehicleType) {
-            case MOTORBIKE: {
-                return ParkingLot::entryHelper(motorbike_parking, vehicle, MOTORBIKE);
-            }
-            case CAR: {
-                return ParkingLot::entryHelper(car_parking, vehicle, CAR);
-            }
-            case HANDICAPPED: {
-                ParkingResult handicapped_result = ParkingLot::entryHelper(
-                        handicapped_parking, vehicle, HANDICAPPED);
-                if (handicapped_result == NO_EMPTY_SPOT) {
-                    return ParkingLot::entryHelper(car_parking, vehicle, CAR);
-                }
-                return handicapped_result;
-            }
-            default:
-                break;
+        if (vehicle_block_type == CAR){
+            return car_parking;
         }
-        // shouldn't reach here
-        return SUCCESS;
+        return handicapped_parking;
     }
-
-    // entryHelper
-    ParkingResult ParkingLot::entryHelper(
-            UniqueArray<Vehicle, std::equal_to> parking_block,
-            Vehicle vehicle, const VehicleType parking_block_type) {
-
-        //current block is full
-        if (parking_block.getCount() == parking_block.getSize()) {
-            if (!(parking_block == handicapped_parking)) {
-                ParkingLotPrinter::printEntryFailureNoSpot(std::cout);
-            }
-            return NO_EMPTY_SPOT;
-        }
-        //block is not full
-        int index = parking_block.insert(vehicle);
-        vehicle.UpdateParkingSpot(parking_block_type, index);
-        ParkingLotPrinter::printVehicle(std::cout, vehicle.getVehicleType(),
-                                        vehicle.getLicensePlate(),
-                                        vehicle.getEntranceTime());
-        ParkingLotPrinter::printEntrySuccess(std::cout,
-                                             vehicle.getParkingSpot());
-        return SUCCESS;
-    }
-
-
-*/
 }
+

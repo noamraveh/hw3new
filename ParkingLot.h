@@ -28,22 +28,17 @@ namespace MtmParkingLot {
         ParkingResult getParkingSpot(LicensePlate licensePlate, ParkingSpot& parkingSpot) const;
         void inspectParkingLot(Time inspectionTime);
         friend ostream& operator<<(ostream& os, const ParkingLot& parkingLot);
-        Vehicle* findVehicleInLot (const Vehicle vehicle) const;
+        Vehicle* findVehicleInLot (const LicensePlate license_plate) const;
         Vehicle* findVehicleInBlock (const UniqueArray<Vehicle,VehicleCompare> parking_block,const LicensePlate licensePlate);
+        UniqueArray<Vehicle,VehicleCompare> vehicleTypetoUniqueArray (VehicleType vehicle_block_type)const;
 
 
-        ParkingResult entryHelper (
+
+            ParkingResult entryHelper (
                 UniqueArray<Vehicle, std::equal_to> parking_block,
                 Vehicle vehicle,
                 const VehicleType parking_block_type);
     };
-
-    enum parking_block {
-        motorbike_parking = 0;
-        handicapped_parking;
-        car_parking;
-    };
-
 }
 
 #endif //MTMPARKINGLOT_PARKINGLOT_H

@@ -161,22 +161,6 @@ unsigned int UniqueArray<Element, Compare>::getSize() const {
 template<class Element, class Compare>
 UniqueArray<Element, Compare>
 UniqueArray<Element, Compare>::filter(const Filter &f) const {
-    /*
-    //create empty UniqueArray
-    UniqueArray FilteredArray = UniqueArray(this->size);
-    //copy only filtered results, all else are given NULL
-    for (int i = 0; i < this->next_index; i++) {
-        FilteredArray.next_index++;
-        if (f(*(this->data[i]))) {
-            Element *new_element = new Element(*(this->data[i]));
-            FilteredArray.data[i] = new_element;
-            FilteredArray.current_occupation++;
-        } else {
-            FilteredArray.data[i] = NULL;
-        }
-    }
-    return FilteredArray;
-*/
 
     UniqueArray<Element,Compare> Filtered(*this);
     for (int i=0; i<Filtered.next_index;i++){
