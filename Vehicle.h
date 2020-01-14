@@ -16,6 +16,7 @@ class Vehicle {
     ParkingSpot parking_spot;
     Time entrance_time;
     LicensePlate license_plate;
+    bool fined;
 
 public:
     /**
@@ -52,6 +53,12 @@ public:
          * @return license_plate of the vehicle (represented by typedef LicenseString)
          */
         LicensePlate getLicensePlate() const;
+        /**
+         * @brief Get the license plate of this vehicle
+         *
+         * @return license_plate of the vehicle (represented by typedef LicenseString)
+         */
+        bool getFined() const;
 
         /**
          * @brief Update parking spot of existing vehicle
@@ -65,7 +72,7 @@ public:
          *
          * @return the price needed to pay
          */
-        int calculatingPrice(VehicleType vehicle_type, Time entry_time, Time exit_time) const;
+        int calculatingPrice(VehicleType vehicle_type, Time entry_time, Time exit_time,const bool fined) const;
 
 
          /**
@@ -73,7 +80,9 @@ public:
          *
          * @return the price needed to pay
          */
-         int Vehicle::calc(int hours,int first_hour_price, int next_hours_price);
+         int calc(int hours,int first_hour_price, int next_hours_price,const bool fined) const;
+
+         void updateFined();
 
 };
 
@@ -90,7 +99,8 @@ Vehicle::Vehicle(VehicleType vehicle_type, LicensePlate license_plate,
                  Time entrance_time):
                  vehicle_type(vehicle_type),
                  license_plate(license_plate),
-                 entrance_time(entrance_time) {
+                 entrance_time(entrance_time),
+                 fined(false){
 }
 VehicleType Vehicle::getVehicleType() const {
     return vehicle_type;
@@ -105,42 +115,48 @@ LicensePlate Vehicle::getLicensePlate() const {
 ParkingSpot Vehicle::getParkingSpot() const {
     return parking_spot;
 }
+bool Vehicle::getFined() const {
+    return fined;
+}
 
 void Vehicle::updateParkingSpot( VehicleType new_parking_block,
                                 unsigned int new_parking_spot) {
     ParkingSpot temp(new_parking_block,new_parking_spot);
     parking_spot = temp;
 }
-int Vehicle::calc(int hours,int first_hour_price, int next_hours_price){
+int Vehicle::calc(int hours,int first_hour_price, int next_hours_price,const bool fined) const {
     if (hours>6){
-        return first_hour_price+5*next_hours_price;
+        return first_hour_price+5*next_hours_price+250*fined;
     }
     return (first_hour_price +(hours-1)*next_hours_price);
 }
 int Vehicle::calculatingPrice(VehicleType vehicle_type, Time entry_time,
-                              Time exit_time) const {
+                              Time exit_time, const bool fined) const {
     int price = 0;
     Time time_diff = exit_time.operator-(entry_time);
     int total_hours = time_diff.toHours();
     switch (vehicle_type){
         case MOTORBIKE:{
-            price = calc(total_hours,10,5);
+            price = calc(total_hours,10,5,fined);
             break;
         }
         case CAR:{
-            price = calc(total_hours,20,10);
+            price = calc(total_hours,20,10,fined);
             break;
         }
         case HANDICAPPED:{
-            price = 15;
+            price = 15 + 250*fined;
             break;
         }
-        case default:{
+        default:{
             price = 0;
-            break;
         }
-        return price;
     }
+    return price;
+}
+
+void Vehicle::updateFined() {
+    fined = true;
 }
 
 

@@ -34,6 +34,10 @@ public:
 
     unsigned int getSize() const;
 
+    const Element* getFirst() const;
+
+    const Element** getData() const;
+
     class Filter {
     public:
         virtual bool operator()(const Element &) const = 0;
@@ -185,6 +189,13 @@ int UniqueArray<Element, Compare>::elementExists(const Element &element) const {
     }
     return -1;
 }
+template<class Element, class Compare>
+const Element* UniqueArray<Element,Compare>::getFirst() const {
+    return this->data[0];
+}
 
-
+template<class Element, class Compare>
+const Element** UniqueArray<Element,Compare>::getData() const {
+    return this->data;
+}
 #endif //MTMPARKINGLOT_UNIQUEARRAY_H

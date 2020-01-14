@@ -7,7 +7,6 @@
 #include "Vehicle.h"
 #include "UniqueArray.h"
 #include "ParkingLotPrinter.h"
-
 namespace MtmParkingLot {
 
     using namespace ParkingLotUtils;
@@ -15,10 +14,9 @@ namespace MtmParkingLot {
 
     class ParkingLot {
         //change to compare
-        UniqueArray<Vehicle,std::equal_to> motorbike_parking;
-        UniqueArray<Vehicle,std::equal_to> handicapped_parking;
-        UniqueArray<Vehicle,std::equal_to> car_parking;
-
+        UniqueArray<Vehicle,VehicleCompare> motorbike_parking;
+        UniqueArray<Vehicle,VehicleCompare> handicapped_parking;
+        UniqueArray<Vehicle,VehicleCompare> car_parking;
     public:
 
         ParkingLot(unsigned int parkingBlockSizes[]);
@@ -35,7 +33,7 @@ namespace MtmParkingLot {
 
 
             ParkingResult entryHelper (
-                UniqueArray<Vehicle, std::equal_to> parking_block,
+                UniqueArray<Vehicle, VehicleCompare> parking_block,
                 Vehicle vehicle,
                 const VehicleType parking_block_type);
     };
