@@ -72,7 +72,7 @@ public:
          *
          * @return the price needed to pay
          */
-        int calculatingPrice(VehicleType vehicle_type, Time entry_time, Time exit_time,const bool fined) const;
+        static int calculatingPrice(VehicleType vehicleType, Time entry_time, Time exit_time, const bool fined) ;
 
 
          /**
@@ -80,9 +80,19 @@ public:
          *
          * @return the price needed to pay
          */
-         int calc(int hours,int first_hour_price, int next_hours_price,const bool fined) const;
+         static int calc(int hours, int first_hour_price, int next_hours_price, const bool fined);
 
          void updateFined();
+
+        /**
+        * @brief Compares given ParkingSpot objects
+        *
+        * @param vehicle1
+        * @param vehicle2
+        * @return true If vehicle1 < vehicle2
+        * @return false otherwise
+        */
+        friend bool operator< (const Vehicle& vehicle1, const Vehicle& vehicle2);
 
 };
 
@@ -124,18 +134,18 @@ void Vehicle::updateParkingSpot( VehicleType new_parking_block,
     ParkingSpot temp(new_parking_block,new_parking_spot);
     parking_spot = temp;
 }
-int Vehicle::calc(int hours,int first_hour_price, int next_hours_price,const bool fined) const {
+int Vehicle::calc(int hours,int first_hour_price, int next_hours_price,const bool fined)  {
     if (hours>6){
         return first_hour_price+5*next_hours_price+250*fined;
     }
     return (first_hour_price +(hours-1)*next_hours_price);
 }
-int Vehicle::calculatingPrice(VehicleType vehicle_type, Time entry_time,
-                              Time exit_time, const bool fined) const {
+int Vehicle::calculatingPrice(VehicleType vehicleType, Time entry_time,
+                              Time exit_time, const bool fined)  {
     int price = 0;
     Time time_diff = exit_time.operator-(entry_time);
     int total_hours = time_diff.toHours();
-    switch (vehicle_type){
+    switch (vehicleType){
         case MOTORBIKE:{
             price = calc(total_hours,10,5,fined);
             break;
@@ -157,6 +167,10 @@ int Vehicle::calculatingPrice(VehicleType vehicle_type, Time entry_time,
 
 void Vehicle::updateFined() {
     fined = true;
+}
+
+bool operator<(const Vehicle &vehicle1, const Vehicle &vehicle2) {
+    return vehicle1.getParkingSpot() < vehicle2.getParkingSpot();
 }
 
 

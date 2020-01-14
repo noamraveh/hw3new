@@ -34,9 +34,8 @@ public:
 
     unsigned int getSize() const;
 
-    const Element* getFirst() const;
+    Element * getElementbyIndex(unsigned int index) const;
 
-    const Element** getData() const;
 
     class Filter {
     public:
@@ -189,13 +188,12 @@ int UniqueArray<Element, Compare>::elementExists(const Element &element) const {
     }
     return -1;
 }
-template<class Element, class Compare>
-const Element* UniqueArray<Element,Compare>::getFirst() const {
-    return this->data[0];
-}
+
 
 template<class Element, class Compare>
-const Element** UniqueArray<Element,Compare>::getData() const {
-    return this->data;
+Element *
+UniqueArray<Element, Compare>::getElementbyIndex(unsigned int index) const {
+    return this->data[index];
 }
+
 #endif //MTMPARKINGLOT_UNIQUEARRAY_H

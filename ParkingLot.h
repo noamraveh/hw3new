@@ -13,7 +13,6 @@ namespace MtmParkingLot {
     using std::ostream;
 
     class ParkingLot {
-        //change to compare
         UniqueArray<Vehicle,VehicleCompare> motorbike_parking;
         UniqueArray<Vehicle,VehicleCompare> handicapped_parking;
         UniqueArray<Vehicle,VehicleCompare> car_parking;
@@ -26,9 +25,12 @@ namespace MtmParkingLot {
         ParkingResult getParkingSpot(LicensePlate licensePlate, ParkingSpot& parkingSpot) const;
         void inspectParkingLot(Time inspectionTime);
         friend ostream& operator<<(ostream& os, const ParkingLot& parkingLot);
-        Vehicle* findVehicleInLot (const LicensePlate license_plate) const;
-        Vehicle* findVehicleInBlock (const UniqueArray<Vehicle,VehicleCompare> parking_block,const LicensePlate licensePlate);
+        const Vehicle * findVehicleInLot (const LicensePlate& license_plate) const;
+        const Vehicle * findVehicleInBlock (const UniqueArray<Vehicle,VehicleCompare> parking_block, const LicensePlate& licensePlate) const;
         UniqueArray<Vehicle,VehicleCompare> vehicleTypetoUniqueArray (VehicleType vehicle_block_type)const;
+        void inspectorPerBlock(UniqueArray<Vehicle, VehicleCompare> parking_block,
+                          Time inspectionTime, unsigned int &num_fined);
+        bool compareSpot(Vehicle* vehicle1, Vehicle* vehicle2);
 
 
 
@@ -36,6 +38,8 @@ namespace MtmParkingLot {
                 UniqueArray<Vehicle, VehicleCompare> parking_block,
                 Vehicle vehicle,
                 const VehicleType parking_block_type);
+
+
     };
 }
 

@@ -1,3 +1,4 @@
+#include <vector>
 #include "ParkingLot.h"
 
 
@@ -53,7 +54,7 @@ namespace MtmParkingLot {
     //exitParking
     ParkingResult ParkingLot::exitParking(LicensePlate licensePlate,
                                           Time exitTime) {
-        Vehicle *wanted_vehicle = findVehicleInLot(licensePlate);
+        const Vehicle *wanted_vehicle = findVehicleInLot(licensePlate);
         if (wanted_vehicle == NULL) {
             ParkingLotPrinter::printExitFailure(std::cout, licensePlate);
             return VEHICLE_NOT_FOUND;
@@ -66,7 +67,7 @@ namespace MtmParkingLot {
                 wanted_vehicle->getParkingSpot().getParkingBlock());
         int price = Vehicle::calculatingPrice(wanted_vehicle->getVehicleType(),
                                               wanted_vehicle->getEntranceTime(),
-                                              exitTime);
+                                              exitTime,wanted_vehicle->getFined());
         wanted_vehicle_block.remove(*wanted_vehicle);
         ParkingLotPrinter::printExitSuccess(std::cout,
                                             wanted_vehicle->getParkingSpot(),
@@ -77,7 +78,7 @@ namespace MtmParkingLot {
     //get parking spot
     ParkingResult ParkingLot::getParkingSpot(LicensePlate licensePlate,
                                              ParkingSpot &parkingSpot) const {
-        Vehicle *found_vehicle = ParkingLot::findVehicleInLot(licensePlate);
+        const Vehicle *found_vehicle = ParkingLot::findVehicleInLot(licensePlate);
         if (found_vehicle == NULL) {
             return VEHICLE_NOT_FOUND;
         }
@@ -87,61 +88,66 @@ namespace MtmParkingLot {
     }
 
     //print lot
-    ostream &ParkingLot::operator<<(ostream &os,
-                                    const MtmParkingLot::ParkingLot &parkingLot) {
-        ParkingLotPrinter::printParkingLotTitle(os)
-        std::vector<Vehicle* > all_vehicles;
-
-        Vehicle **all_motorbikes = motorbike_parking.getData();
-        for (int i = 0; i < motorbike_parking.getSize(); i++) {
-            all_vehicles.push_back(all_motorbikes[i]);
+        ostream& operator<<(ostream &os,const ParkingLot& parkingLot) {
+        ParkingLotPrinter::printParkingLotTitle(os);
+        std::vector<const Vehicle > all_vehicles;
+        for (int i=0; i<parkingLot.motorbike_parking.getSize();i++){
+            Vehicle current_vehicle = *(parkingLot.motorbike_parking.getElementbyIndex(i));
+            all_vehicles.push_back(current_vehicle);
         }
 
-        Vehicle **all_handicapped = handicapped_parking.getData();
-        for (int i = 0; i < handicapped_parking.getSize(); i++) {
-            all_vehicles.push_back(all_handicapped[i]);
-        }
-        Vehicle **all_cars = car_parking.getData();
-        for (int i = 0; i < car_parking.getSize(); i++) {
-            all_vehicles.push_back(all_cars[i]);
-        }
-        typedef std::vector<Vehicle *>::iterator Iterator;
+        for (int i=0; i<parkingLot.handicapped_parking.getSize();i++){
+            Vehicle current_vehicle = *(parkingLot.handicapped_parking.getElementbyIndex(i));
+            all_vehicles.push_back(current_vehicle);
 
-        for (Iterator = all_vehicles.begin();
-             Iterator != all_vehicles.end(), Iterator++) {
-            Vehicle current_vehicle = *Iterator;
+        }
+
+        for (int i=0; i<parkingLot.car_parking.getSize();i++){
+            Vehicle current_vehicle = *(parkingLot.car_parking.getElementbyIndex(i));
+            all_vehicles.push_back(current_vehicle);
+
+        }
+        std::sort(all_vehicles.begin(),all_vehicles.end());
+        for (auto i=all_vehicles.begin(); i != all_vehicles.end();i++){
+            const Vehicle current_vehicle = *i;
             ParkingLotPrinter::printVehicle(os,
                                             current_vehicle.getVehicleType(),
                                             current_vehicle.getLicensePlate(),
                                             current_vehicle.getEntranceTime());
-            ParkingLotPrinter::printParkingSpot(
-                    current_vehicle.getParkingSpot());
+            ParkingLotPrinter::printParkingSpot(os,
+                                                current_vehicle.getParkingSpot());
         }
+        return os;
     }
 
     void ParkingLot::inspectParkingLot(Time inspectionTime) {
         unsigned int num_fined = 0;
-        Vehicle **all_motorbikes = motorbike_parking.getData();
-        for (int i = 0; i < motorbike_parking.getSize(); i++) {
-            if (((inspectionTime.operator-(all_motorbikes[i]->getEntranceTime())).toHours()>24) && all_motorbikes[i].getFined() == false){
-                all_motorbikes[i]->updateFined();
+
+        for (int i=0; i<motorbike_parking.getSize();i++){
+            Vehicle* current_vehicle = motorbike_parking.getElementbyIndex(i);
+            if ((inspectionTime.operator-(current_vehicle->getEntranceTime())).toHours()>24){
                 num_fined++;
+                current_vehicle->updateFined();
             }
         }
-        Vehicle **all_handicapped = handicapped_parking.getData();
-        for (int i = 0; i < handicapped_parking.getSize(); i++) {
-            if (((inspectionTime.operator-(all_handicapped[i]->getEntranceTime())).toHours()>24) && all_handicapped[i].getFined() == false){
-                all_handicapped[i]->updateFined();
+
+        for (int i=0; i<handicapped_parking.getSize();i++){
+            Vehicle* current_vehicle = handicapped_parking.getElementbyIndex(i);
+            if ((inspectionTime.operator-(current_vehicle->getEntranceTime())).toHours()>24){
                 num_fined++;
+                current_vehicle->updateFined();
             }
         }
-        Vehicle **all_cars = car_parking.getData();
-        for (int i = 0; i < car_parking.getSize(); i++) {
-            if (((inspectionTime.operator-(all_cars[i]->getEntranceTime())).toHours()>24) && all_cars[i].getFined() == false){
-                all_cars[i]->updateFined();
+
+        for (int i=0; i<car_parking.getSize();i++){
+            Vehicle* current_vehicle = car_parking.getElementbyIndex(i);
+            if ((inspectionTime.operator-(current_vehicle->getEntranceTime())).toHours()>24){
                 num_fined++;
+                current_vehicle->updateFined();
             }
         }
+
+
         ParkingLotPrinter::printInspectionResult(std::cout,inspectionTime,num_fined);
     }
 
@@ -153,12 +159,12 @@ namespace MtmParkingLot {
 
     //entryHelper
     ParkingResult ParkingLot::entryHelper(
-            UniqueArray<Vehicle, std::equal_to> parking_block,
+            UniqueArray<Vehicle, VehicleCompare> parking_block,
             Vehicle vehicle, const VehicleType parking_block_type) {
-
+        unsigned int index;
         try {
-            int index = parking_block.insert(vehicle);
-        } catch (UniqueArray::UniqueArrayIsFullException) {
+            index = parking_block.insert(vehicle);
+        } catch (UniqueArray<Vehicle,VehicleCompare>::UniqueArrayIsFullException) {
             return NO_EMPTY_SPOT;
         }
         vehicle.updateParkingSpot(parking_block_type, index);
@@ -171,29 +177,29 @@ namespace MtmParkingLot {
     }
 
     //findVehicleInBlock
-    Vehicle *ParkingLot::findVehicleInBlock(
+    const Vehicle * ParkingLot::findVehicleInBlock(
             const UniqueArray<Vehicle, VehicleCompare> parking_block,
-            const LicensePlate licensePlate) {
+            const LicensePlate& licensePlate) const {
         Time fictive_time(0, 0, 0);
         Vehicle fictive_vehicle(CAR, licensePlate, fictive_time);
         return parking_block[fictive_vehicle];
     }
 
     //findVehicleInLot
-    Vehicle *
-    ParkingLot::findVehicleInLot(const LicensePlate license_plate) const {
-        Vehicle *found_vehicle = ParkingLot::findVehicleInBlock(
-                motorbike_parking, licensePlate);
+    const Vehicle *
+    ParkingLot::findVehicleInLot(const LicensePlate& license_plate) const {
+        const Vehicle *found_vehicle = ParkingLot::findVehicleInBlock(
+                motorbike_parking, license_plate);
         if (found_vehicle != NULL) {
             return found_vehicle;
         }
         found_vehicle = ParkingLot::findVehicleInBlock(car_parking,
-                                                       licensePlate);
+                                                       license_plate);
         if (found_vehicle != NULL) {
             return found_vehicle;
         }
         found_vehicle = ParkingLot::findVehicleInBlock(handicapped_parking,
-                                                       licensePlate);
+                                                       license_plate);
         return found_vehicle;
     }
 
@@ -209,5 +215,8 @@ namespace MtmParkingLot {
         return handicapped_parking;
     }
 
+    bool ParkingLot::compareSpot(Vehicle* vehicle1, Vehicle* vehicle2) {
+        return vehicle1->getParkingSpot()<vehicle2->getParkingSpot();
+    }
 }
 
