@@ -1,7 +1,9 @@
 #include <vector>
 #include "ParkingLot.h"
 
-
+using std::vector;
+using namespace MtmParkingLot;
+using namespace ParkingLotUtils;
 namespace MtmParkingLot {
 
     //c'tor
@@ -90,7 +92,7 @@ namespace MtmParkingLot {
     //print lot
         ostream& operator<<(ostream &os,const ParkingLot& parkingLot) {
         ParkingLotPrinter::printParkingLotTitle(os);
-        std::vector<const Vehicle > all_vehicles;
+        std::vector<Vehicle> all_vehicles;
         for (int i=0; i<parkingLot.motorbike_parking.getSize();i++){
             Vehicle current_vehicle = *(parkingLot.motorbike_parking.getElementbyIndex(i));
             all_vehicles.push_back(current_vehicle);
@@ -107,9 +109,9 @@ namespace MtmParkingLot {
             all_vehicles.push_back(current_vehicle);
 
         }
-        std::sort(all_vehicles.begin(),all_vehicles.end());
+       // std::sort(all_vehicles.begin(),all_vehicles.end());
         for (auto i=all_vehicles.begin(); i != all_vehicles.end();i++){
-            const Vehicle current_vehicle = *i;
+            Vehicle current_vehicle = *i;
             ParkingLotPrinter::printVehicle(os,
                                             current_vehicle.getVehicleType(),
                                             current_vehicle.getLicensePlate(),

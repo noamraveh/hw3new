@@ -7,6 +7,7 @@
 #include "Vehicle.h"
 #include "UniqueArray.h"
 #include "ParkingLotPrinter.h"
+
 namespace MtmParkingLot {
 
     using namespace ParkingLotUtils;
@@ -41,6 +42,9 @@ namespace MtmParkingLot {
 
 
     };
+
 }
+
+
 
 #endif //MTMPARKINGLOT_PARKINGLOT_H
