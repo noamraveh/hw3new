@@ -36,6 +36,9 @@ int Vehicle::calc(int hours,int first_hour_price, int next_hours_price,const boo
     if (hours>6){
         return first_hour_price+5*next_hours_price+250*fined;
     }
+    if (hours==0){
+        return 0;
+    }
     return (first_hour_price +(hours-1)*next_hours_price);
 }
 int Vehicle::calculatingPrice(VehicleType vehicleType, Time entry_time,
@@ -53,7 +56,7 @@ int Vehicle::calculatingPrice(VehicleType vehicleType, Time entry_time,
             break;
         }
         case HANDICAPPED:{
-            price = 15 + 250*fined;
+            price = total_hours*15 + 250*fined;
             break;
         }
         default:{
