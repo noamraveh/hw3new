@@ -27,8 +27,8 @@ namespace MtmParkingLot {
         void inspectParkingLot(Time inspectionTime);
         friend ostream& operator<<(ostream& os, const ParkingLot& parkingLot);
         const Vehicle * findVehicleInLot (const LicensePlate& license_plate) const;
-        const Vehicle * findVehicleInBlock (const UniqueArray<Vehicle,VehicleCompare> parking_block, const LicensePlate& licensePlate) const;
-        UniqueArray<Vehicle,VehicleCompare> vehicleTypetoUniqueArray (VehicleType vehicle_block_type)const;
+        const Vehicle * findVehicleInBlock (const UniqueArray<Vehicle,VehicleCompare>& parking_block, const LicensePlate& licensePlate) const;
+        UniqueArray<Vehicle,VehicleCompare>* vehicleTypetoUniqueArray (VehicleType vehicle_block_type)  ;
         void inspectorPerBlock(UniqueArray<Vehicle, VehicleCompare> parking_block,
                           Time inspectionTime, unsigned int &num_fined);
         bool compareSpot(Vehicle* vehicle1, Vehicle* vehicle2);
@@ -36,11 +36,14 @@ namespace MtmParkingLot {
 
 
             ParkingResult entryHelper (
-                UniqueArray<Vehicle, VehicleCompare> parking_block,
+                UniqueArray<Vehicle, VehicleCompare>& parking_block,
                 Vehicle vehicle,
                 const VehicleType parking_block_type);
 
 
+        void
+        removeFromBlock(UniqueArray<Vehicle, VehicleCompare> &block,
+                        Vehicle &Vehicle);
     };
 
 }

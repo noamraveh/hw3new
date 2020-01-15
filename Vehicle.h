@@ -94,9 +94,7 @@ public:
         */
         friend bool operator< (const Vehicle& vehicle1, const Vehicle& vehicle2);
 
-
 };
-
 
 class VehicleCompare{
 public:
@@ -105,4 +103,5 @@ public:
         return vehicle1.getLicensePlate() == vehicle2.getLicensePlate();
     };
 };
+
 #endif //HW3_VEHICLE_H
