@@ -27,9 +27,9 @@ namespace MtmParkingLot {
         enterParking(VehicleType vehicleType, LicensePlate licensePlate,
                      Time entranceTime);
 
-        ParkingResult exitParking(LicensePlate licensePlate, Time exitTime);
+        ParkingResult exitParking(const LicensePlate& licensePlate, Time exitTime);
 
-        ParkingResult getParkingSpot(LicensePlate licensePlate,
+        ParkingResult getParkingSpot(const LicensePlate& licensePlate,
                                      ParkingSpot &parkingSpot) const;
 
         void inspectParkingLot(Time inspectionTime);
@@ -46,11 +46,10 @@ namespace MtmParkingLot {
         UniqueArray<Vehicle, VehicleCompare> *
         vehicleTypetoUniqueArray(VehicleType vehicle_block_type);
 
-        bool compareSpot(Vehicle *vehicle1, Vehicle *vehicle2);
 
         ParkingResult entryHelper(
                 UniqueArray<Vehicle, VehicleCompare> &parking_block,
-                Vehicle vehicle, const VehicleType parking_block_type);
+                const Vehicle& vehicle, const VehicleType parking_block_type);
 
     };
 

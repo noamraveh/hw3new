@@ -9,23 +9,33 @@
 #include "Time.h"
 #include "ParkingSpot.h"
 
+static const int MOTORBIKE_PRICE_FIRST = 10 ;
+static const int MOTORBIKE_PRICE_FOLLOWING = 5 ;
+static const int CAR_PRICE_FIRST = 20 ;
+static const int CAR_PRICE_FOLLOWING = 10 ;
+static const int HANDICAPPED_PRICE = 15 ;
+static const int FINE = 250;
+static const int MAX_HOURS_TO_PAY = 6;
 using namespace ParkingLotUtils;
 
-class Vehicle {
-    VehicleType vehicle_type;
-    ParkingSpot parking_spot;
-    Time entrance_time;
-    LicensePlate license_plate;
-    bool fined;
+namespace MtmParkingLot {
 
-public:
-    /**
-        * @brief Construct a new Vehicle object. Add entrance t
-        *
-        * @param license_plate The license plate of the vehicle (represented by LicensePlate enum)
-        * @param vehicle_type The type of the vehicle (represented by VehicleType enum)
-        */
-        Vehicle(VehicleType vehicle_type, LicensePlate license_plate, Time entrance_time);
+    class Vehicle {
+        VehicleType vehicle_type;
+        ParkingSpot parking_spot;
+        Time entrance_time;
+        LicensePlate license_plate;
+        bool fined;
+
+    public:
+        /**
+            * @brief Construct a new Vehicle object. Add entrance t
+            *
+            * @param license_plate The license plate of the vehicle (represented by LicensePlate enum)
+            * @param vehicle_type The type of the vehicle (represented by VehicleType enum)
+            */
+        Vehicle(VehicleType vehicle_type, LicensePlate license_plate,
+                Time entrance_time);
 
         /**
          * @brief Get the vehicle type of this vehicle
@@ -33,6 +43,7 @@ public:
          * @return vehicle_type of the vehicle (represented by enum vehicleType)
          */
         VehicleType getVehicleType() const;
+
         /**
          * @brief Get the parking spot of this ParkingSpot
          *
@@ -53,6 +64,7 @@ public:
          * @return license_plate of the vehicle (represented by typedef LicenseString)
          */
         LicensePlate getLicensePlate() const;
+
         /**
          * @brief Get the license plate of this vehicle
          *
@@ -65,24 +77,27 @@ public:
          *
          * @return
          */
-         void updateParkingSpot(VehicleType new_parking_block,unsigned int new_parking_spot);
+        void updateParkingSpot(VehicleType new_parking_block,
+                               unsigned int new_parking_spot);
 
         /**
          * @brief Calculating the price for parking
          *
          * @return the price needed to pay
          */
-        static int calculatingPrice(VehicleType vehicleType, Time entry_time, Time exit_time, const bool fined) ;
+        static int calculatingPrice(VehicleType vehicleType, Time entry_time,
+                                    Time exit_time, const bool fined);
 
 
-         /**
-         * @brief Calculating the price for given vehicleType
-         *
-         * @return the price needed to pay
-         */
-         static int calc(int hours, int first_hour_price, int next_hours_price, const bool fined);
+        /**
+        * @brief Calculating the price for given vehicleType
+        *
+        * @return the price needed to pay
+        */
+        static int calc(int hours, int first_hour_price, int next_hours_price,
+                        const bool fined);
 
-         void updateFined();
+        void updateFined();
 
         /**
         * @brief Compares given ParkingSpot objects
@@ -92,16 +107,19 @@ public:
         * @return true If vehicle1 < vehicle2
         * @return false otherwise
         */
-        friend bool operator< (const Vehicle& vehicle1, const Vehicle& vehicle2);
+        friend bool operator<(const Vehicle &vehicle1, const Vehicle &vehicle2);
 
-};
-
-class VehicleCompare{
-public:
-    VehicleCompare() = default;
-    bool operator()(const Vehicle& vehicle1, const Vehicle& vehicle2) const{
-        return vehicle1.getLicensePlate() == vehicle2.getLicensePlate();
     };
-};
+
+    class VehicleCompare {
+    public:
+        VehicleCompare() = default;
+
+        bool
+        operator()(const Vehicle &vehicle1, const Vehicle &vehicle2) const {
+            return vehicle1.getLicensePlate() == vehicle2.getLicensePlate();
+        };
+    };
+}
 
 #endif //HW3_VEHICLE_H

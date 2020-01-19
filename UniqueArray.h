@@ -72,7 +72,7 @@ UniqueArray<Element, Compare>::UniqueArray(const UniqueArray &other) :
             continue;
         } else {
             Element *new_element = new Element(*(other.data[i]));
-            data[i] = new_element;
+            data[i] = new_element ;
             current_occupation++;
         }
     }

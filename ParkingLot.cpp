@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 #include "ParkingLot.h"
 
 using std::vector;
@@ -13,9 +14,7 @@ namespace MtmParkingLot {
             car_parking(parkingBlockSizes[2]) {
     }
 
-    ParkingLot::~ParkingLot() {
-
-    }
+    ParkingLot::~ParkingLot() = default;
 
     //enterParking
     ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
@@ -28,7 +27,7 @@ namespace MtmParkingLot {
         ParkingResult result;
         const Vehicle *found_vehicle = findVehicleInLot(
                 vehicle.getLicensePlate());
-        if (found_vehicle != NULL) {
+        if (found_vehicle != nullptr) {
             ParkingLotPrinter::printVehicle(std::cout,
                                             found_vehicle->getVehicleType(),
                                             found_vehicle->getLicensePlate(),
@@ -66,7 +65,7 @@ namespace MtmParkingLot {
     }
 
     //exitParking
-    ParkingResult ParkingLot::exitParking(LicensePlate licensePlate,
+    ParkingResult ParkingLot::exitParking(const LicensePlate& licensePlate,
                                           Time exitTime) {
         const Vehicle *wanted_vehicle = findVehicleInLot(licensePlate);
 
@@ -93,11 +92,11 @@ namespace MtmParkingLot {
     }
 
     //get parking spot
-    ParkingResult ParkingLot::getParkingSpot(LicensePlate licensePlate,
+    ParkingResult ParkingLot::getParkingSpot(const LicensePlate& licensePlate,
                                              ParkingSpot &parkingSpot) const {
         const Vehicle *found_vehicle = ParkingLot::findVehicleInLot(
                 licensePlate);
-        if (found_vehicle == NULL) {
+        if (found_vehicle == nullptr) {
             return VEHICLE_NOT_FOUND;
         }
         parkingSpot = found_vehicle->getParkingSpot();
@@ -110,7 +109,7 @@ namespace MtmParkingLot {
         ParkingLotPrinter::printParkingLotTitle(os);
         std::vector<Vehicle> all_vehicles;
         for (int i = 0; i < parkingLot.motorbike_parking.getSize(); i++) {
-            if (parkingLot.motorbike_parking.getElementbyIndex(i) != NULL) {
+            if (parkingLot.motorbike_parking.getElementbyIndex(i) != nullptr) {
                 Vehicle current_vehicle = *(parkingLot.motorbike_parking.getElementbyIndex(
                         i));
                 all_vehicles.push_back(current_vehicle);
@@ -118,7 +117,7 @@ namespace MtmParkingLot {
         }
 
         for (int i = 0; i < parkingLot.handicapped_parking.getSize(); i++) {
-            if (parkingLot.handicapped_parking.getElementbyIndex(i) != NULL) {
+            if (parkingLot.handicapped_parking.getElementbyIndex(i) != nullptr) {
                 Vehicle current_vehicle = *(parkingLot.handicapped_parking.getElementbyIndex(
                         i));
                 all_vehicles.push_back(current_vehicle);
@@ -126,14 +125,14 @@ namespace MtmParkingLot {
         }
 
         for (int i = 0; i < parkingLot.car_parking.getSize(); i++) {
-            if (parkingLot.car_parking.getElementbyIndex(i) != NULL) {
+            if (parkingLot.car_parking.getElementbyIndex(i) != nullptr) {
                 Vehicle current_vehicle = *(parkingLot.car_parking.getElementbyIndex(
                         i));
                 all_vehicles.push_back(current_vehicle);
             }
 
         }
-        // std::sort(all_vehicles.begin(),all_vehicles.end());
+        std::sort(all_vehicles.begin(),all_vehicles.end());
         for (auto i = all_vehicles.begin(); i != all_vehicles.end(); i++) {
             Vehicle current_vehicle = *i;
             ParkingLotPrinter::printVehicle(os,
@@ -151,7 +150,7 @@ namespace MtmParkingLot {
 
         for (int i = 0; i < motorbike_parking.getSize(); i++) {
             Vehicle *current_vehicle = motorbike_parking.getElementbyIndex(i);
-            if (current_vehicle == NULL) {
+            if (current_vehicle == nullptr) {
                 continue;
             }
             if ((inspectionTime.operator-(
@@ -164,7 +163,7 @@ namespace MtmParkingLot {
 
         for (int i = 0; i < handicapped_parking.getSize(); i++) {
             Vehicle *current_vehicle = handicapped_parking.getElementbyIndex(i);
-            if (current_vehicle == NULL) {
+            if (current_vehicle == nullptr) {
                 continue;
             }
             if ((inspectionTime.operator-(
@@ -177,7 +176,7 @@ namespace MtmParkingLot {
 
         for (int i = 0; i < car_parking.getSize(); i++) {
             Vehicle *current_vehicle = car_parking.getElementbyIndex(i);
-            if (current_vehicle == NULL) {
+            if (current_vehicle == nullptr) {
                 continue;
             }
             if ((inspectionTime.operator-(
@@ -196,7 +195,7 @@ namespace MtmParkingLot {
     //entryHelper
     ParkingResult ParkingLot::entryHelper(
             UniqueArray<Vehicle, VehicleCompare> &parking_block,
-            Vehicle vehicle, const VehicleType parking_block_type) {
+            const Vehicle& vehicle, const VehicleType parking_block_type) {
         unsigned int index;
         try {
             index = parking_block.insert(vehicle);
@@ -236,12 +235,12 @@ namespace MtmParkingLot {
     ParkingLot::findVehicleInLot(const LicensePlate &license_plate) const {
         const Vehicle *found_vehicle = ParkingLot::findVehicleInBlock(
                 motorbike_parking, license_plate);
-        if (found_vehicle != NULL) {
+        if (found_vehicle != nullptr) {
             return found_vehicle;
         }
         found_vehicle = ParkingLot::findVehicleInBlock(car_parking,
                                                        license_plate);
-        if (found_vehicle != NULL) {
+        if (found_vehicle != nullptr) {
             return found_vehicle;
         }
         found_vehicle = ParkingLot::findVehicleInBlock(handicapped_parking,
@@ -262,8 +261,5 @@ namespace MtmParkingLot {
         return &handicapped_parking;
     }
 
-    bool ParkingLot::compareSpot(Vehicle *vehicle1, Vehicle *vehicle2) {
-        return vehicle1->getParkingSpot() < vehicle2->getParkingSpot();
-    }
 }
 
