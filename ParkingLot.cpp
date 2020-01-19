@@ -108,23 +108,7 @@ namespace MtmParkingLot {
     ostream &operator<<(ostream &os, const ParkingLot &parkingLot) {
         ParkingLotPrinter::printParkingLotTitle(os);
         std::vector<Vehicle> all_vehicles;
-        for (int i = 0; i < parkingLot.motorbike_parking.getSize(); i++) {
-            if (parkingLot.motorbike_parking.getElementbyIndex(i) != nullptr) {
-                Vehicle current_vehicle = *(parkingLot.motorbike_parking.getElementbyIndex(
-                        i));
-                all_vehicles.push_back(current_vehicle);
-            }
-        }
-
-        for (int i = 0; i < parkingLot.handicapped_parking.getSize(); i++) {
-            if (parkingLot.handicapped_parking.getElementbyIndex(i) != nullptr) {
-                Vehicle current_vehicle = *(parkingLot.handicapped_parking.getElementbyIndex(
-                        i));
-                all_vehicles.push_back(current_vehicle);
-            }
-        }
-
-        for (int i = 0; i < parkingLot.car_parking.getSize(); i++) {
+        for (unsigned int i = 0; i < parkingLot.car_parking.getSize(); i++) {
             if (parkingLot.car_parking.getElementbyIndex(i) != nullptr) {
                 Vehicle current_vehicle = *(parkingLot.car_parking.getElementbyIndex(
                         i));
@@ -132,6 +116,23 @@ namespace MtmParkingLot {
             }
 
         }
+        for (unsigned int i = 0; i < parkingLot.motorbike_parking.getSize(); i++) {
+            if (parkingLot.motorbike_parking.getElementbyIndex(i) != nullptr) {
+                Vehicle current_vehicle = *(parkingLot.motorbike_parking.getElementbyIndex(
+                        i));
+                all_vehicles.push_back(current_vehicle);
+            }
+        }
+
+        for (unsigned int i = 0; i < parkingLot.handicapped_parking.getSize(); i++) {
+            if (parkingLot.handicapped_parking.getElementbyIndex(i) != nullptr) {
+                Vehicle current_vehicle = *(parkingLot.handicapped_parking.getElementbyIndex(
+                        i));
+                all_vehicles.push_back(current_vehicle);
+            }
+        }
+
+
         std::sort(all_vehicles.begin(),all_vehicles.end());
         for (auto i = all_vehicles.begin(); i != all_vehicles.end(); i++) {
             Vehicle current_vehicle = *i;
@@ -148,7 +149,7 @@ namespace MtmParkingLot {
     void ParkingLot::inspectParkingLot(Time inspectionTime) {
         unsigned int num_fined = 0;
 
-        for (int i = 0; i < motorbike_parking.getSize(); i++) {
+        for (unsigned int i = 0; i < motorbike_parking.getSize(); i++) {
             Vehicle *current_vehicle = motorbike_parking.getElementbyIndex(i);
             if (current_vehicle == nullptr) {
                 continue;
@@ -161,7 +162,7 @@ namespace MtmParkingLot {
             }
         }
 
-        for (int i = 0; i < handicapped_parking.getSize(); i++) {
+        for (unsigned int i = 0; i < handicapped_parking.getSize(); i++) {
             Vehicle *current_vehicle = handicapped_parking.getElementbyIndex(i);
             if (current_vehicle == nullptr) {
                 continue;
@@ -174,7 +175,7 @@ namespace MtmParkingLot {
             }
         }
 
-        for (int i = 0; i < car_parking.getSize(); i++) {
+        for (unsigned int i = 0; i < car_parking.getSize(); i++) {
             Vehicle *current_vehicle = car_parking.getElementbyIndex(i);
             if (current_vehicle == nullptr) {
                 continue;

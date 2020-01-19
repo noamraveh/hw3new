@@ -4,8 +4,8 @@
         Vehicle::Vehicle(VehicleType vehicle_type, LicensePlate license_plate,
                          Time entrance_time) :
                 vehicle_type(vehicle_type),
-                license_plate(license_plate),
                 entrance_time(entrance_time),
+                license_plate(license_plate),
                 fined(false) {
         }
 
