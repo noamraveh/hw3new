@@ -9,16 +9,16 @@
 #include "Time.h"
 #include "ParkingSpot.h"
 
-static const int MOTORBIKE_PRICE_FIRST = 10 ;
-static const int MOTORBIKE_PRICE_FOLLOWING = 5 ;
-static const int CAR_PRICE_FIRST = 20 ;
-static const int CAR_PRICE_FOLLOWING = 10 ;
-static const int HANDICAPPED_PRICE = 15 ;
-static const int FINE = 250;
-static const int MAX_HOURS_TO_PAY = 6;
 using namespace ParkingLotUtils;
-
 namespace MtmParkingLot {
+
+    static const int MOTORBIKE_PRICE_FIRST = 10 ;
+    static const int MOTORBIKE_PRICE_FOLLOWING = 5 ;
+    static const int CAR_PRICE_FIRST = 20 ;
+    static const int CAR_PRICE_FOLLOWING = 10 ;
+    static const int HANDICAPPED_PRICE = 15 ;
+    static const int FINE = 250;
+    static const int MAX_HOURS_TO_PAY = 6;
 
     class Vehicle {
         VehicleType vehicle_type;
@@ -30,9 +30,10 @@ namespace MtmParkingLot {
     public:
         /**
             * @brief Construct a new Vehicle object. Add entrance t
-            *
+
             * @param license_plate The license plate of the vehicle (represented by LicensePlate enum)
             * @param vehicle_type The type of the vehicle (represented by VehicleType enum)
+            * @param entrance_time the time of entrance (represented by Time class element)
             */
         Vehicle(VehicleType vehicle_type, LicensePlate license_plate,
                 Time entrance_time);
@@ -66,22 +67,27 @@ namespace MtmParkingLot {
         LicensePlate getLicensePlate() const;
 
         /**
-         * @brief Get the license plate of this vehicle
+         * @brief Get the fine status of  this vehicle
          *
-         * @return license_plate of the vehicle (represented by typedef LicenseString)
+         * @return fined true/false (bool)
          */
         bool getFined() const;
 
         /**
          * @brief Update parking spot of existing vehicle
          *
-         * @return
+         * @param new_parking_block updated block (represented by VehicleType enum)
+         * @param new_parking_spot updated spot (int)
          */
         void updateParkingSpot(VehicleType new_parking_block,
                                unsigned int new_parking_spot);
 
         /**
-         * @brief Calculating the price for parking
+         * @brief Calculating the price for parking for all vehicles
+         *
+         * @param VehicleType type of vehicle (VehicleType enum)
+         * @param entry_time time of entrance (Time class element)
+         * @param fined true/false whether vehicle is fined or not (bool)
          *
          * @return the price needed to pay
          */
@@ -92,10 +98,18 @@ namespace MtmParkingLot {
         /**
         * @brief Calculating the price for given vehicleType
         *
-        * @return the price needed to pay
+        * @param hours total hours parked
+        * @param first_hour_price,next_hours_price - prices for the specific vehicle
+        * @param fined true/false whether vehicle is fined or not (bool)
+        * @return the price needed to pay for the given type
         */
-        static int calc(int hours, int first_hour_price, int next_hours_price,
-                        const bool fined);
+        static int price_per_vehicle_type(int hours, int first_hour_price, int next_hours_price,
+                                          const bool fined);
+
+        /**
+         * update the find status from false to true of given vehicle
+         *
+         */
 
         void updateFined();
 

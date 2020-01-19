@@ -3,4 +3,4 @@ project(hw3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(hw3 MtmParkingLot.cpp ParkingLot.cpp ParkingLotPrinter.cpp ParkingSpot.cpp Time.cpp Vehicle.cpp)
+add_executable(hw3 MtmParkingLot.cpp Time.cpp Vehicle.cpp ParkingSpot.cpp ParkingLotPrinter.cpp ParkingLot.cpp )

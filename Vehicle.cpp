@@ -35,8 +35,8 @@
             parking_spot = temp;
         }
 
-        int Vehicle::calc(int hours, int first_hour_price, int next_hours_price,
-                          const bool fined) {
+        int Vehicle::price_per_vehicle_type(int hours, int first_hour_price, int next_hours_price,
+                                            const bool fined) {
             if (hours > MAX_HOURS_TO_PAY) {
                 return first_hour_price + (MAX_HOURS_TO_PAY - 1) * next_hours_price + FINE * fined;
             }
@@ -53,11 +53,15 @@
             int total_hours = time_diff.toHours();
             switch (vehicleType) {
                 case MOTORBIKE: {
-                    price = calc(total_hours, MOTORBIKE_PRICE_FIRST, MOTORBIKE_PRICE_FOLLOWING, fined);
+                    price = price_per_vehicle_type(total_hours,
+                                                   MOTORBIKE_PRICE_FIRST,
+                                                   MOTORBIKE_PRICE_FOLLOWING,
+                                                   fined);
                     break;
                 }
                 case CAR: {
-                    price = calc(total_hours, CAR_PRICE_FIRST, CAR_PRICE_FOLLOWING, fined);
+                    price = price_per_vehicle_type(total_hours, CAR_PRICE_FIRST,
+                                                   CAR_PRICE_FOLLOWING, fined);
                     break;
                 }
                 case HANDICAPPED: {
