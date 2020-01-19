@@ -29,6 +29,9 @@ UniqueArray<Element, Compare>::UniqueArray(const UniqueArray &other) :
 
 template<class Element, class Compare>
 UniqueArray<Element, Compare>::~UniqueArray() {
+    for (int i=0;i<size;i++){
+        delete data[i];
+    }
     delete[] data;
 }
 
@@ -52,6 +55,7 @@ unsigned int UniqueArray<Element, Compare>::insert(const Element &element) {
         }
     }
     if (next_index >= size) {
+        delete new_element;
         throw UniqueArrayIsFullException();
 
     }

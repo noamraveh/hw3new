@@ -38,6 +38,8 @@ namespace MtmParkingLot {
         Vehicle(VehicleType vehicle_type, LicensePlate license_plate,
                 Time entrance_time);
 
+        ~Vehicle()=default;
+
         /**
          * @brief Get the vehicle type of this vehicle
          *
@@ -92,7 +94,7 @@ namespace MtmParkingLot {
          * @return the price needed to pay
          */
         static int calculatingPrice(VehicleType vehicleType, Time entry_time,
-                                    Time exit_time, const bool fined);
+                                    Time exit_time, bool fined);
 
 
         /**
@@ -104,7 +106,7 @@ namespace MtmParkingLot {
         * @return the price needed to pay for the given type
         */
         static int price_per_vehicle_type(int hours, int first_hour_price, int next_hours_price,
-                                          const bool fined);
+                                          bool fined);
 
         /**
          * update the find status from false to true of given vehicle

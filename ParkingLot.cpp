@@ -14,8 +14,6 @@ namespace MtmParkingLot {
             car_parking(parkingBlockSizes[2]) {
     }
 
-    ParkingLot::~ParkingLot() = default;
-
     //enterParking
     ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
                                            LicensePlate licensePlate,

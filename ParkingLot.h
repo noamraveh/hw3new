@@ -19,9 +19,9 @@ namespace MtmParkingLot {
         UniqueArray<Vehicle, VehicleCompare> car_parking;
     public:
 
-        ParkingLot(unsigned int parkingBlockSizes[]);
+        explicit ParkingLot(unsigned int parkingBlockSizes[]);
 
-        ~ParkingLot();
+        ~ParkingLot() = default;
 
         ParkingResult
         enterParking(VehicleType vehicleType, LicensePlate licensePlate,
@@ -36,17 +36,20 @@ namespace MtmParkingLot {
 
         friend ostream &operator<<(ostream &os, const ParkingLot &parkingLot);
 
+        // search for specific vehicle by license plate in entire parking lot
         const Vehicle *
         findVehicleInLot(const LicensePlate &license_plate) const;
 
+        // search for vehicle by license plate in given parking block
         const Vehicle *findVehicleInBlock(
                 const UniqueArray<Vehicle, VehicleCompare> &parking_block,
                 const LicensePlate &licensePlate) const;
 
+        // return unique array pointer by a given vehicleType (block type)
         UniqueArray<Vehicle, VehicleCompare> *
         vehicleTypetoUniqueArray(VehicleType vehicle_block_type);
 
-
+        // insert new vehicle into given parking block
         ParkingResult entryHelper(
                 UniqueArray<Vehicle, VehicleCompare> &parking_block,
                 const Vehicle& vehicle, const VehicleType parking_block_type);
